@@ -2,7 +2,7 @@
 //   This file is originally from the Concentré XML project (version 0.2.1)
 //   Licensed under GPL and LGPL
 //
-//   Modified by Jeremy Stephens.
+//   Modified by iLeonelPerea.
 
 // Pass in the attribute you want to use for comparing
 function AVLTree(n, attr) {
@@ -13,6 +13,7 @@ AVLTree.prototype.init = function(n, attr) {
     this.attr = attr;
     this.left = null;
     this.right = null;
+    this.parent = null;
     this.node = n;
     this.depth = 1;
     this.elements = [n];
@@ -44,6 +45,9 @@ AVLTree.prototype.balance = function() {
             // plus a RR rotation of this node, which happens anyway
         }
         this.rotateRR();
+    }
+    if(this.parent){
+        this.parent.balance();
     }
 };
 
@@ -82,10 +86,10 @@ AVLTree.prototype.rotateRR = function() {
 };
 
 AVLTree.prototype.updateInNewLocation = function() {
-    this.getDepthFromChildren();
+    this.getDepth();
 };
 
-AVLTree.prototype.getDepthFromChildren = function() {
+AVLTree.prototype.getDepth = function() {
     this.depth = this.node == null ? 0 : 1;
     if (this.left != null) {
         this.depth = this.left.depth + 1;
@@ -93,54 +97,23 @@ AVLTree.prototype.getDepthFromChildren = function() {
     if (this.right != null && this.depth <= this.right.depth) {
         this.depth = this.right.depth + 1;
     }
+    if(this.parent){
+        this.parent.getDepth();
+    }
 };
 
-AVLTree.prototype.compare = function(n1, n2) {
-    v1 = n1[this.attr];
-    v2 = n2[this.attr];
-    if (v1 == v2) {
-        return 0;
-    }
-    if (v1 < v2) {
-        return -1;
-    }
-    return 1;
+AVLTree.prototype.addLeft = function(n)  {
+    this.left = n;
+    this.left.parent = this;
+    this.left.getDepth();
+    this.balance();
 };
 
-AVLTree.prototype.add = function(n)  {
-    var o = this.compare(n, this.node);
-    if (o == 0) {
-        this.elements.push(n);
-        return false;
-    }
-
-    var ret = false;
-    if (o == -1) {
-        if (this.left == null) {
-            this.left = new AVLTree(n, this.attr);
-            ret = true;
-        } else {
-            ret = this.left.add(n);
-            if (ret) {
-                this.balance();
-            }
-        }
-    } else if (o == 1) {
-        if (this.right == null) {
-            this.right = new AVLTree(n, this.attr);
-            ret = true;
-        } else {
-            ret = this.right.add(n);
-            if (ret) {
-                this.balance();
-            }
-        }
-    }
-
-    if (ret) {
-        this.getDepthFromChildren();
-    }
-    return ret;
+AVLTree.prototype.addRight = function(n)  {
+    this.right = n;
+    this.right.parent = this;
+    this.getDepth();
+    this.balance();
 };
 
 // Given the beginning of a value, return the elements if there's a match
@@ -163,6 +136,106 @@ AVLTree.prototype.findBest = function(value) {
     return this.elements;
 }
 
-var myAVL = new AVLTree("valor",7);
-myAVL.add(1);
-myAVL.add(8);
+AVLTree.prototype.preorderPrint = function() {
+    console.log(this.node.attr);
+
+    if (this.left) {
+        this.left.preorderPrint();
+    }
+ 
+    if (this.right) {
+        this.right.preorderPrint();
+    }
+};
+
+AVLTree.prototype.inorderPrint = function(padding) {
+    if (this.left) {
+        this.left.preorderPrint();
+    }
+
+    console.log(this.node.attr);
+ 
+    if (this.right) {
+        this.right.preorderPrint();
+    }
+};
+ 
+AVLTree.prototype.postorderPrint = function(padding) {
+    if (this.left) {
+        this.left.preorderPrint();
+    }
+
+    if (this.right) {
+        this.right.preorderPrint();
+    }
+
+    console.log(this.node.attr);
+};
+
+AVLTree.prototype.treeAdd = function() {
+  var sum = 0;
+  if (this.left) {
+    sum+= this.left.treeAdd();
+  }
+  for (var i = 0, len = this.elements.length; i<len; ++i) {
+    sum+=this.elements[i][this.attr];
+  }
+  if (this.right) {
+    sum+= this.right.treeAdd();
+  }
+  return sum;
+}
+
+AVLTree.prototype.cachedArray = null;
+AVLTree.prototype.cachedArrayIsDirty = true;
+AVLTree.prototype.buildArray = function() {
+  var array = [];
+  if (this.left) {
+    array = array.concat(this.left.toArray());
+  }
+
+  array = this.elements;
+
+  if (this.right) {
+    array = array.concat(this.right.toArray());
+  }
+
+  return array;
+};
+
+AVLTree.prototype.toArray = function() {
+  if (!this.cachedArrayIsDirty) {
+    return this.cachedArray;
+  }
+  this.cachedArray = this.buildArray();
+  this.cachedArrayIsDirty = false;
+  return this.cachedArray;
+}
+
+//Variables
+var numNodes = 10;
+var previous = 0;
+
+// Generated a sortedish list
+function rand() {
+  var delta = Math.random();
+  if (Math.random() > 0.8)
+    delta*=-1;
+  previous+=delta;
+  return previous;
+}
+
+// AVLTreeCachedArray
+// var i;
+// var v = rand();
+// var tree = new AVLTree({attr:v}, 'attr');
+// for (i = 0; i < numNodes; ++i) {
+//   tree.add({attr: rand()});
+// }
+
+var tree = new AVLTree({attr:10}, 'attr');
+var nodeSandia = new AVLTree({attr:5}, 'attr');
+var nodeMelon = new AVLTree({attr:7}, 'attr');
+tree.addLeft(nodeSandia);
+nodeSandia.addRight(nodeMelon);
+
