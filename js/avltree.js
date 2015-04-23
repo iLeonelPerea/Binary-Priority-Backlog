@@ -137,7 +137,7 @@ AVLTree.prototype.findBest = function(value) {
 }
 
 AVLTree.prototype.preorderPrint = function() {
-    console.log(this.node.attr);
+    console.log(this.node.name);
 
     if (this.left) {
         this.left.preorderPrint();
@@ -153,7 +153,7 @@ AVLTree.prototype.inorderPrint = function(padding) {
         this.left.preorderPrint();
     }
 
-    console.log(this.node.attr);
+    console.log(this.node.name);
  
     if (this.right) {
         this.right.preorderPrint();
@@ -169,7 +169,7 @@ AVLTree.prototype.postorderPrint = function(padding) {
         this.right.preorderPrint();
     }
 
-    console.log(this.node.attr);
+    console.log(this.node.name);
 };
 
 AVLTree.prototype.treeAdd = function() {
@@ -233,9 +233,9 @@ function rand() {
 //   tree.add({attr: rand()});
 // }
 
-var tree = new AVLTree({attr:10}, 'attr');
-var nodeSandia = new AVLTree({attr:5}, 'attr');
-var nodeMelon = new AVLTree({attr:7}, 'attr');
-tree.addLeft(nodeSandia);
-nodeSandia.addRight(nodeMelon);
+// var tree = new AVLTree({attr:10}, 'attr');
+// var nodeSandia = new AVLTree({attr:5}, 'attr');
+// var nodeMelon = new AVLTree({attr:7}, 'attr');
+// tree.addLeft(nodeSandia);
+// nodeSandia.addRight(nodeMelon);
 
