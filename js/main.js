@@ -46,7 +46,8 @@ $j(document).ready(function(){
 	}
 
 	var displayBoard = function(board){	
-		output = "<h1>"+board.name+"</h1>";	
+		output = "<h1>"+board.name+"</h1>";
+		output += "<h3>Select the Higher Task</h3>";	
 		arrayCards = [];
 		$j.each(board.lists, function (i){
 			var idList = this.id;
@@ -54,10 +55,6 @@ $j(document).ready(function(){
 			$j.each(board.cards, function(i){
 				if (this.idList == idList){
 					arrayCards.push({id:this.id , name:this.name ,description:this.desc });
-					// output += "<strong><p>"+this.name+"</p></strong>";
-					// output += '<div class="span6">';
-				  //       output += "<strong><p>"+this.name+"</p></strong>";
-			  //       output += "</div>";
 				}
 			});
 			//output += "</div>";
@@ -71,10 +68,11 @@ $j(document).ready(function(){
 			tree = new AVLTree(arrayCards[0], 'attr');
 			arrayCards.shift();
 			currentNode = tree;
-			var output = '<div class="span6 lowerNode"><strong><p>'+currentNode.node.name+'</p></strong></div>';
 			nextNode = new AVLTree(arrayCards[0], 'attr');
 			arrayCards.shift();
-			output += '<div class="span6 higherNode"><strong><p>'+nextNode.node.name+'</p></strong></div>';
+			var output = '<div class="span12"><h5>Activity to priorize: '+nextNode.node.name+'</h4></div>';
+			output += '<div class="span12"><div class="span6 lowerNode"><strong><p>'+currentNode.node.name+'</p></strong><p>'+currentNode.node.description+'</p></div>';
+			output += '<div class="span6 higherNode"><strong><p>'+nextNode.node.name+'</p></strong><p>'+nextNode.node.description+'</p></div></div>';
 			$j('#cardsView').html(output);
 			
 		}
@@ -87,7 +85,6 @@ $j(document).ready(function(){
 	var updateLoggedIn = function() {
 	    var isLoggedIn = Trello.authorized();
 	    if (isLoggedIn){
-	    	console.log('logged in');
 	    	$j(".loggedIn").show();     
 	    	$j(".loggedOut").hide();   
 	    } else {
@@ -138,8 +135,9 @@ $j(document).ready(function(){
 		var output = null;
 		if (currentNode.left != null){
 			currentNode = currentNode.left;
-			output = '<div class="span6 lowerNode"><strong><p>'+currentNode.node.name+'</p></strong></div>';
-			output += '<div class="span6 higherNode"><strong><p>'+nextNode.node.name+'</p></strong></div>';
+			output = '<div class="span12"><h5>Activity to priorize: '+nextNode.node.name+'</h4></div>';
+			output += '<div class="span12"><div class="span6 lowerNode"><strong><p>'+currentNode.node.name+'</p></strong><p>'+currentNode.node.description+'</p></strong></div>';
+			output += '<div class="span6 higherNode"><strong><p>'+nextNode.node.name+'</p></strong><p>'+nextNode.node.description+'</p></strong></div></div>';
 			$j('#cardsView').html(output);
 		}else{
 			currentNode.addLeft(nextNode);
@@ -148,8 +146,9 @@ $j(document).ready(function(){
 			if(arrayCards.length > 0){
 				nextNode = new AVLTree(arrayCards[0], 'attr');
 				arrayCards.shift();
-				output = '<div class="span6 lowerNode"><strong><p>'+currentNode.node.name+'</p></strong></div>';
-				output += '<div class="span6 higherNode"><strong><p>'+nextNode.node.name+'</p></strong></div>';
+				output = '<div class="span12"><h5>Activity to priorize: '+nextNode.node.name+'</h4></div>';
+				output += '<div class="span12"><div class="span6 lowerNode"><strong><p>'+currentNode.node.name+'</p></strong><p>'+currentNode.node.description+'</p></strong></div>';
+				output += '<div class="span6 higherNode"><strong><p>'+nextNode.node.name+'</p></strong><p>'+nextNode.node.description+'</p></strong></div></div>';
 				$j('#cardsView').html(output);
 			}
 		}
@@ -164,8 +163,9 @@ $j(document).ready(function(){
 		var output = null;
 		if (currentNode.right != null){
 			currentNode = currentNode.right;
-			output = '<div class="span6 lowerNode"><strong><p>'+currentNode.node.name+'</p></strong></div>';
-			output += '<div class="span6 higherNode"><strong><p>'+nextNode.node.name+'</p></strong></div>';
+			output = '<div class="span12"><h5>Activity to priorize: '+nextNode.node.name+'</h4></div>';
+			output += '<div class="span12"><div class="span6 lowerNode"><strong><p>'+currentNode.node.name+'</p></strong><p>'+currentNode.node.description+'</p></strong></div>';
+			output += '<div class="span6 higherNode"><strong><p>'+nextNode.node.name+'</p></strong><p>'+nextNode.node.description+'</p></strong></div></div>';
 			$j('#cardsView').html(output);
 		}else{
 			currentNode.addRight(nextNode);
@@ -174,8 +174,9 @@ $j(document).ready(function(){
 			if(arrayCards.length > 0){
 				nextNode = new AVLTree(arrayCards[0], 'attr');
 				arrayCards.shift();
-				output = '<div class="span6 lowerNode"><strong><p>'+currentNode.node.name+'</p></strong></div>';
-				output += '<div class="span6 higherNode"><strong><p>'+nextNode.node.name+'</p></strong></div>';
+				output = '<div class="span12"><h5>Activity to priorize: '+nextNode.node.name+'</h4></div>';
+				output += '<div class="span12"><div class="span6 lowerNode"><strong><p>'+currentNode.node.name+'</p></strong><p>'+currentNode.node.description+'</p></strong></div>';
+				output += '<div class="span6 higherNode"><strong><p>'+nextNode.node.name+'</p></strong><p>'+nextNode.node.description+'</p></strong></div></div>';
 				$j('#cardsView').html(output);
 			}
 		}
