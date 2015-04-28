@@ -8,6 +8,9 @@ var arrayCards = [];
 var tree = null;
 var currentNode = null;
 var nextNode = null;
+var HaveOrdenedList = false;
+var board_ID = null;
+var list_ID = null;
 
 var $j = jQuery.noConflict();
 
@@ -49,8 +52,13 @@ $j(document).ready(function(){
 		output = "<h1>"+board.name+"</h1>";
 		output += "<h3>Select the Higher Task</h3>";	
 		arrayCards = [];
+		board_ID = board.id;
 		$j.each(board.lists, function (i){
 			var idList = this.id;
+			if(this.name == "Ordened List"){
+				HaveOrdenedList = true;
+				list_ID = this.id;
+			}
 			//output += "<h3>"+this.name+'</h3><div class="span12 card">';
 			$j.each(board.cards, function(i){
 				if (this.idList == idList){
@@ -59,6 +67,17 @@ $j(document).ready(function(){
 			});
 			//output += "</div>";
 		});
+		if(!HaveOrdenedList){
+			Trello.post("lists", { name: "Ordened List", idBoard: board_ID });
+			Trello.boards.get(board_ID, {lists: "open", cards: "visible"}, function(board_){
+				$j.each(board_.lists, function (i){
+					if(this.name == "Ordened List"){
+						HaveOrdenedList = true;
+						list_ID = this.id;
+					}
+				});
+			});
+		}
 		$j('#output').html(output);
 		startPriorization();
 	}
@@ -76,10 +95,6 @@ $j(document).ready(function(){
 			$j('#cardsView').html(output);
 			
 		}
-		// var nodeSandia = new AVLTree({attr:5}, 'attr');
-		// var nodeMelon = new AVLTree({attr:7}, 'attr');
-		// tree.addLeft(nodeSandia);
-		// nodeSandia.addRight(nodeMelon);		
 	}
 
 	var updateLoggedIn = function() {
@@ -153,9 +168,10 @@ $j(document).ready(function(){
 			}
 		}
 		if(nextNode == null){
+			arrayCards = tree.buildArray();
 			output = '<div class="span12"><strong><p>Priorization Finished!</p></strong></div>';
-			tree.inorderPrint();
 			$j('#cardsView').html(output);
+			postCards();
 		}
 	});
 
@@ -181,12 +197,22 @@ $j(document).ready(function(){
 			}
 		}
 		if(nextNode == null){
+			arrayCards = tree.buildArray();
 			output = '<div class="span12"><strong><p>Priorization Finished!</p></strong></div>';
-			tree.inorderPrint();
 			$j('#cardsView').html(output);
+			postCards();
 		}
 	});
 	    
+	var postCards = function() {
+		if(list_ID && arrayCards.length > 0){
+			Trello.put("cards/"+(arrayCards[0])[0].id,{ idList: list_ID, pos: "top"}, function(){
+				arrayCards.shift();
+				postCards();
+			});
+		}
+	};
+
 	$j("#disconnect").click(logout);
 
 	/**
@@ -204,6 +230,8 @@ $j(document).ready(function(){
 	      
 	      // Move a card by its ID to other List
 	      Trello.put("cards/54078053605b33754c5e54c7/",{ idList: "54073bf6ac6c8854779543a9"});		   
+
+	      //PUT /1/cards/[card id or shortlink]/idList
 	};
 
 });

@@ -102,6 +102,10 @@ AVLTree.prototype.getDepth = function() {
     }
 };
 
+AVLTree.prototype.getRoot = function()  {
+    
+};
+
 AVLTree.prototype.addLeft = function(n)  {
     this.left = n;
     this.left.parent = this;
@@ -136,19 +140,19 @@ AVLTree.prototype.findBest = function(value) {
     return this.elements;
 }
 
-AVLTree.prototype.preorderPrint = function() {
+AVLTree.prototype.inorderPrint = function() {
     console.log(this.node.name);
 
     if (this.left) {
-        this.left.preorderPrint();
+        this.left.inorderPrint();
     }
  
     if (this.right) {
-        this.right.preorderPrint();
+        this.right.inorderPrint();
     }
 };
 
-AVLTree.prototype.inorderPrint = function(padding) {
+AVLTree.prototype.preorderPrint = function(padding) {
     if (this.left) {
         this.left.preorderPrint();
     }
@@ -161,15 +165,15 @@ AVLTree.prototype.inorderPrint = function(padding) {
 };
  
 AVLTree.prototype.postorderPrint = function(padding) {
-    if (this.left) {
-        this.left.preorderPrint();
-    }
-
     if (this.right) {
-        this.right.preorderPrint();
+        this.right.postorderPrint();
     }
 
     console.log(this.node.name);
+
+    if (this.left) {
+        this.left.postorderPrint();
+    }
 };
 
 AVLTree.prototype.treeAdd = function() {
@@ -194,7 +198,7 @@ AVLTree.prototype.buildArray = function() {
     array = array.concat(this.left.toArray());
   }
 
-  array = this.elements;
+  array.push(this.elements);
 
   if (this.right) {
     array = array.concat(this.right.toArray());
@@ -212,6 +216,19 @@ AVLTree.prototype.toArray = function() {
   return this.cachedArray;
 }
 
+AVLTree.prototype.toArray2 = function(arr) {
+    if (this.left) {
+        arr = this.left.toArray(arr);
+    } else {
+        arr = arr || [];
+    }
+    arr.push(this.node);
+    if (this.right) {
+        arr = this.right.toArray(arr);
+    }
+    return arr;
+}
+
 //Variables
 var numNodes = 10;
 var previous = 0;
@@ -224,18 +241,3 @@ function rand() {
   previous+=delta;
   return previous;
 }
-
-// AVLTreeCachedArray
-// var i;
-// var v = rand();
-// var tree = new AVLTree({attr:v}, 'attr');
-// for (i = 0; i < numNodes; ++i) {
-//   tree.add({attr: rand()});
-// }
-
-// var tree = new AVLTree({attr:10}, 'attr');
-// var nodeSandia = new AVLTree({attr:5}, 'attr');
-// var nodeMelon = new AVLTree({attr:7}, 'attr');
-// tree.addLeft(nodeSandia);
-// nodeSandia.addRight(nodeMelon);
-
