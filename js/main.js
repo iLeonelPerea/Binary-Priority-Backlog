@@ -59,13 +59,11 @@ $j(document).ready(function(){
 				HaveOrdenedList = true;
 				list_ID = this.id;
 			}
-			//output += "<h3>"+this.name+'</h3><div class="span12 card">';
 			$j.each(board.cards, function(i){
 				if (this.idList == idList){
-					arrayCards.push({id:this.id , name:this.name ,description:this.desc });
+					arrayCards.push(this);
 				}
 			});
-			//output += "</div>";
 		});
 		if(!HaveOrdenedList){
 			Trello.post("lists", { name: "Ordened List", idBoard: board_ID });
@@ -206,7 +204,8 @@ $j(document).ready(function(){
 	    
 	var postCards = function() {
 		if(list_ID && arrayCards.length > 0){
-			Trello.put("cards/"+(arrayCards[0])[0].id,{ idList: list_ID, pos: "top"}, function(){
+			(arrayCards[0])[0].idList = list_ID;
+			Trello.post("cards/",(arrayCards[0])[0], function(){
 				arrayCards.shift();
 				postCards();
 			});
@@ -214,25 +213,4 @@ $j(document).ready(function(){
 	};
 
 	$j("#disconnect").click(logout);
-
-	/**
-	 * All actions that can be executed are in thi API Reference
-	 *                      https://trello.com/docs/api/index.html
-	 * @returns {undefined}
-	 */
-	var otherActions = function() {
-	      updateLoggedIn();       
-	      //Trello.post("cards/idCard/actions/comments", { text: "Modificando datos desde php" });
-	      //Trello.put("cards/IdCard/",{ idList: "idListaNueva"});		   
-	       
-	      // Put a comment to some idCard by idCard
-	      Trello.post("cards/54073cc73cefcb77d1f1309d/actions/comments", { text: "Modificando datos desde API javascript" });
-	      
-	      // Move a card by its ID to other List
-	      Trello.put("cards/54078053605b33754c5e54c7/",{ idList: "54073bf6ac6c8854779543a9"});		   
-
-	      //PUT /1/cards/[card id or shortlink]/idList
-	};
-
 });
-
