@@ -44,7 +44,7 @@ $j(document).ready(function(){
 						Trello.boards.get(board.id, {lists: "open", cards: "visible"}, function(board){
 							output += '<li><label id="loadingBoards">Select a List</label></li>';
 							$j.each(board.lists, function (i){
-								output += '<li><a class="selectedList" data-board-id="'+board.id+'" data-list-id="'+this.id+'" data-list-name="'+this.name+'" href="#">'+this.name+'</a></li>';
+								output += '<li><a class="selectedList" data-reveal-id="myModal" data-board-id="'+board.id+'" data-list-id="'+this.id+'" data-list-name="'+this.name+'" href="#">'+this.name+'</a></li>';
 							});
 							output += '</ul>';
 							$j("#displayBoards").append(output);
@@ -53,7 +53,7 @@ $j(document).ready(function(){
 	    });
 	}
 
-	$j(document.body).on('click', '.selectedList', function(e){
+	var startPriorization = function(){
 		list_ID = $j(this).data('list-id');
 		list_NAME = $j(this).data('list-name');
 		board_ID = $j(this).data('board-id');
@@ -70,9 +70,6 @@ $j(document).ready(function(){
 				startPriorization();
 			});
 		});
-	});
-
-	var startPriorization = function(){
 		if(arrayCards.length >= 2){
 			tree = new AVLTree(arrayCards[0], 'attr');
 			arrayCards.shift();
@@ -84,7 +81,43 @@ $j(document).ready(function(){
 			output += '<div class="small-6 medium-6 large-6 columns right-click"><div class="panel callout radius" data-equalizer-watch><p>'+nextNode.node.name+'</p></div></div>';
 			$j('#cardsView').html(output);
 		}
-	}
+	};
+
+	$j(document.body).on('click', '.selectedList', function(e){
+		list_ID = $j(this).data('list-id');
+		list_NAME = $j(this).data('list-name');
+		board_ID = $j(this).data('board-id');
+		var output = '<h2 id="modalTitle">Awesome. Prepare for proritization.</h2><br />';
+		output += '<form>';
+		output += '<div class="row">';
+		output += '<div class="large-6 columns">';
+		output += '<div class="row collapse prefix-radius">';
+		output += '<div class="small-3 columns">';
+		output += '<span class="prefix">Prioritized By</span>';
+		output += '</div>';
+		output += '<div class="small-9 columns">';
+		output += '<input type="text" id="postAttribute" placeholder="Attribute...">';
+		output += '</div>';
+		output += '</div>';
+		output += '</div>';
+		output += '<div class="large-6 columns">';
+		output += '<div class="row collapse postfix-raius">';
+		output += '<div class="small-8 columns">';
+		output += '<input type="text" id="postQuestion" placeholder="Question...">';
+		output += '</div>';
+		output += '<div class="small-4 columns">';
+		output += '<span class="postfix">Question to Ask?</span>';
+		output += '</div>';
+		output += '</div><br /><br />';
+		output += '</div>';
+		output += '<div class="small-9 medium-6 large-4 small-centered medium-centered large-centered columns"><a onClick="JavaScript:startPriorization()" href="#" data-board-id="'+board_ID+'" data-list-id="'+list_ID+'" data-list-name="'+list_NAME+'" class="button success large round">Start Priorization</a></div>';
+		output += '</div>';
+		output += '</form>';
+		output += '<a class="close-reveal-modal" aria-label="Close">&#215;</a>';
+		$j('#myModal').html(output);
+	});
+
+
 
 	var updateLoggedIn = function() {
 	    var isLoggedIn = Trello.authorized();
@@ -145,7 +178,7 @@ $j(document).ready(function(){
 				$j(".left-click").show("slow");
 			});
 		}else{
-			currentNode.addRight(nextNode);
+			currentNode.addLeft(nextNode);
 			currentNode = tree;
 			nextNode = null;
 			if(arrayCards.length > 0){
@@ -174,14 +207,14 @@ $j(document).ready(function(){
 	$j(document.body).on('click', '.right-click', function(e){
 		var output = null;
 		if (currentNode.right != null){
-			$j(".right-click").hide("slow",function(){
+			$j(".left-click").hide("slow",function(){
 				currentNode = currentNode.right;
 				output = '<div class="panel callout radius" data-equalizer-watch><p>'+currentNode.node.name+'</p></div>';
-				$j('.right-click').html(output);
-				$j(".right-click").show("slow");
+				$j('.left-click').html(output);
+				$j(".left-click").show("slow");
 			});
 		}else{
-			currentNode.addLeft(nextNode);
+			currentNode.addRight(nextNode);
 			currentNode = tree;
 			nextNode = null;
 			if(arrayCards.length > 0){
