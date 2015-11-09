@@ -1,0 +1,43 @@
+[submodule "puppetlabs-apt"]
+	   path = modules/apt
+	   url  = https://github.com/puppetlabs/puppetlabs-apt.git
+
+[submodule "puppetlabs-concat"]
+	   path = modules/concat
+	   url  = https://github.com/puppetlabs/puppetlabs-concat.git
+
+[submodule "puppetlabs-nginx"]
+	   path = modules/nginx
+	   url  = https://github.com/jfryman/puppet-nginx.git
+
+[submodule "puppetlabs-stdlib"]
+	   path = modules/stdlib
+	   url  = https://github.com/puppetlabs/puppetlabs-stdlib.git
+
+[submodule "puppetlabs-vcsrepo"]
+	   path = modules/vcsrepo
+	   url  = https://github.com/puppetlabs/puppetlabs-vcsrepo.git
+
+[submodule "puppetlabs-archive"]
+	   path = modules/archive
+	   url  = https://github.com/camptocamp/puppet-archive.git
+
+[submodule "puppetlabs-java"]
+	   path = modules/java
+	   url  = https://github.com/puppetlabs/puppetlabs-java.git
+
+[submodule "puppetlabs-jenkins"]
+	   path = modules/jenkins
+	   url  = https://github.com/jenkinsci/puppet-jenkins.git
+
+[submodule "puppetlabs-staging"]
+	   path = modules/staging
+	   url  = https://github.com/nanliu/puppet-staging.git
+
+[submodule "modules/customservice"]
+	path = modules/customservice
+	url = https://github.com/poz2k4444/puppet-customservice.git
+
+[submodule "modules/golang"]
+	path = modules/golang
+	url = https://github.com/dcoxall/dcoxall-golang.git

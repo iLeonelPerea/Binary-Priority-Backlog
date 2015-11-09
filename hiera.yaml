@@ -1,0 +1,10 @@
+---
+:backends:
+  - yaml
+:yaml:
+  :datadir: "/etc/puppet/iaas/hieradata"
+:hierarchy:
+  - "%{::environment}/node/%{::hostname}"
+  - "%{::environment}/hosts"
+  - "node/%{::hostname}"
+  - "hosts"

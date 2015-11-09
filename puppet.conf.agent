@@ -1,0 +1,28 @@
+[main]
+<% if ! @job_name -%>
+confdir=/etc/puppet/iaas
+environmentpath=/environments
+<% end -%>
+logdir=/var/log/puppet
+vardir=/var/lib/puppet
+ssldir=/var/lib/puppet/ssl
+rundir=/var/run/puppet
+factpath=/lib/facter
+prerun_command=/etc/puppet/etckeeper-commit-pre
+postrun_command=/etc/puppet/etckeeper-commit-post
+user=puppet
+group=puppet
+server=puppetmaster
+[master]
+ssl_client_header=SSL_CLIENT_S_DN
+ssl_client_verify_header=SSL_CLIENT_VERIFY
+[agent]
+<% if @job_name -%>
+certname=<%= @job_name %>
+<% end -%>
+report=true
+graph=true
+runinterval=10m
+<% if @environment -%>
+environment=<%= @environment %>
+<% end -%>

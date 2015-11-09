@@ -1,0 +1,21 @@
+hosts:
+  puppetmaster:
+    ip:
+      - "192.241.130.112"
+    comment: Created by Puppets
+    host_aliases:
+      - puppetmaster.dominio
+  "%{::hostname}":
+    ip: "%{::ipaddress_eth0}"
+    comment: Created by Puppet
+
+dev_hosts:
+  dev.puppetmaster:
+    ip:
+      - "192.168.33.10"
+    comment: Created by Puppets
+    host_aliases:
+      - dev.puppetmaster
+  "%{::hostname}":
+    ip: "%{::ipaddress_eth0}"
+    comment: Created by Puppet
