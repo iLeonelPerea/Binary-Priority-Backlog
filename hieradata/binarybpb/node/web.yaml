@@ -2,3 +2,5 @@
 classes:
   - nginx
   - web
+
+nginx::config::sendfile: off
