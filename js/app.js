@@ -55,7 +55,8 @@ Foundation.utils.S(document).foundation({
 													+'<li id="testtest" class="back"><a href="#">Back</a></li>'
 													+'<li><label id="off-canvas-menu-title">Select a List</label></li>';
 							$.each(boardObject.lists, function (list_index, listObject){
-								output += '<li><a class="selectedList" data-reveal-id="myModal" data-board-id="'+boardObject.id+'" data-list-id="'+listObject.id+'" data-list-name="'+listObject.name+'" href="#">'+listObject.name+'</a></li>';
+								if(listObject.name.indexOf("Ordened by: ") == -1)
+									output += '<li><a class="selectedList" data-reveal-id="myModal" data-board-id="'+boardObject.id+'" data-list-id="'+listObject.id+'" data-list-name="'+listObject.name+'" href="#">'+listObject.name+'</a></li>';
 							});
 							output += '</ul>'
 											+'</li>';
@@ -73,9 +74,9 @@ Foundation.utils.S(document).foundation({
 		Foundation.utils.S(".left-off-canvas-menu").animate({ scrollTop: 0 });
 	});
 
-	Foundation.utils.S(document.body).on('click', '#startPriorization', function(e){
-		var $postAttribute = Foundation.utils.S('input:text[name="postAttribute"]').val();
-		var $postQuestion = Foundation.utils.S('input:text[name="postQuestion"]').val();
+	Foundation.utils.S(document.body).on('click', '#startBPLPriorization', function(e){
+		var $postAttribute = Foundation.utils.S("input[name='postAttribute']").val();
+		var $postQuestion = Foundation.utils.S("input[name='postQuestion']").val();
 		if ($postAttribute == "") {
 			Foundation.utils.S("#errorAttribute").show("slow");
 		}else{
@@ -95,7 +96,7 @@ Foundation.utils.S(document).foundation({
 				output += "<h4>"+$postQuestion+"</h4>";
 				Foundation.utils.S('#message').html(output);
 				arrayCards = [];
-			$j.each(list.cards, function (i){
+			$.each(list.cards, function (i){
 					arrayCards.push(this);
 				});
 				Trello.post("lists", { name: list_NAME+" Ordened by: "+$postAttribute, idBoard: board_ID }, function(list_){
@@ -106,12 +107,12 @@ Foundation.utils.S(document).foundation({
 						currentNode = tree;
 						nextNode = new AVLTree(arrayCards[0], 'attr');
 						arrayCards.shift();
-						var output = '<h6>Activity to priorize: '+nextNode.node.name+'</h6>';
-						output += '<div class="small-6 medium-6 large-6 columns left-click"><div class="panel callout radius" data-equalizer-watch><p>'+currentNode.node.name+'</p></div></div>';
+						//var output = '<h6>Activity to priorize: '+nextNode.node.name+'</h6>';
+						var output = '<div class="small-6 medium-6 large-6 columns left-click"><div class="panel callout radius" data-equalizer-watch><p>'+currentNode.node.name+'</p></div></div>';
 						output += '<div class="small-6 medium-6 large-6 columns right-click"><div class="panel callout radius" data-equalizer-watch><p>'+nextNode.node.name+'</p></div></div>';
 						Foundation.utils.S('#cardsView').html(output);
 					}
-					Foundation.utils.S('#modalConfiguration').foundation('reveal', 'close');
+					Foundation.utils.S('#modalBPLConfiguration').foundation('reveal', 'close');
 				});
 			});
 		}
@@ -122,7 +123,7 @@ Foundation.utils.S(document).foundation({
 		list_ID = Foundation.utils.S(this).data('list-id');
 		list_NAME = Foundation.utils.S(this).data('list-name');
 		board_ID = Foundation.utils.S(this).data('board-id');
-		var output = '<h2 id="modalConfiguration">Awesome. Prepare for proritization.</h2><br />';
+		var output = '<h2 id="modalBPLConfiguration">Awesome. Prepare for BPL proritization.</h2><br />';
 		output += '<form id="configuration">';
 		output += '<div class="row">';
 		output += '<div class="large-6 columns">';
@@ -147,7 +148,9 @@ Foundation.utils.S(document).foundation({
 		output += '</div>';
 		output += '</div><br /><br />';
 		output += '</div>';
-		output += '<div class="small-9 medium-6 large-4 small-centered medium-centered large-centered columns"><a id="startPriorization" href="#" data-board-id="'+board_ID+'" data-list-id="'+list_ID+'" data-list-name="'+list_NAME+'" class="button success large round">Start Priorization</a></div>';
+		output += '</div>';
+		output += '<div class="row">';
+		output += '<div class="small-9 medium-6 large-4 small-centered medium-centered large-centered columns"><a id="startBPLPriorization" href="#" data-board-id="'+board_ID+'" data-list-id="'+list_ID+'" data-list-name="'+list_NAME+'" class="button success large round">Start Priorization</a></div>';
 		output += '</div>';
 		output += '</form>';
 		output += '<a class="close-reveal-modal" aria-label="Close">&#215;</a>';
@@ -298,7 +301,7 @@ Foundation.utils.S(document.body).on('click', '.left-click', function(e){
 	        scope:{
 						write:true,
 						read:true},
-	        name: 'AVL-Priorization'
+	        name: 'Binary-BPB'
 	    })
 	});
 
