@@ -56,7 +56,7 @@ Foundation.utils.S(document).foundation({
 													+'<li id="testtest" class="back"><a href="#">Back</a></li>'
 													+'<li><label id="off-canvas-menu-title">Select a List</label></li>';
 							$.each(boardObject.lists, function (list_index, listObject){
-								//if(listObject.name.indexOf("Ordened by: ") == -1)
+								if(listObject.name.indexOf("Ordened by: ") == -1)
 									output += '<li><a class="selectedList" data-reveal-id="myModal" data-board-id="'+boardObject.id+'" data-list-id="'+listObject.id+'" data-list-name="'+listObject.name+'" href="#">'+listObject.name+'</a></li>';
 							});
 							output += '</ul>'
