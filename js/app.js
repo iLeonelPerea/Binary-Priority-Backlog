@@ -19,6 +19,7 @@ Foundation.utils.S(document).foundation({
  	var board_ID = null;
  	var list_ID = null;
  	var list_NAME = null;
+	var amountCards = 0;
 	
 	var boardsObject = [];
 	
@@ -55,7 +56,7 @@ Foundation.utils.S(document).foundation({
 													+'<li id="testtest" class="back"><a href="#">Back</a></li>'
 													+'<li><label id="off-canvas-menu-title">Select a List</label></li>';
 							$.each(boardObject.lists, function (list_index, listObject){
-								if(listObject.name.indexOf("Ordened by: ") == -1)
+								//if(listObject.name.indexOf("Ordened by: ") == -1)
 									output += '<li><a class="selectedList" data-reveal-id="myModal" data-board-id="'+boardObject.id+'" data-list-id="'+listObject.id+'" data-list-name="'+listObject.name+'" href="#">'+listObject.name+'</a></li>';
 							});
 							output += '</ul>'
@@ -92,11 +93,13 @@ Foundation.utils.S(document).foundation({
 			list_NAME = Foundation.utils.S(this).data('list-name');
 			board_ID = Foundation.utils.S(this).data('board-id');
 			Trello.lists.get(list_ID, {cards: "open"}, function(list){
+				amountCards = list.cards.length;
 				var output = "<h3>List selelected: "+list.name+"</h3>";
-				output += "<h4>"+$postQuestion+"</h4>";
+				output += "<h4>Question: "+$postQuestion+"</h4>";
+				output += "<h5>Amount of Requirements: "+amountCards+"</h4>";
 				Foundation.utils.S('#message').html(output);
 				arrayCards = [];
-			$.each(list.cards, function (i){
+				$.each(list.cards, function (i){
 					arrayCards.push(this);
 				});
 				Trello.post("lists", { name: list_NAME+" Ordened by: "+$postAttribute, idBoard: board_ID }, function(list_){
@@ -119,6 +122,12 @@ Foundation.utils.S(document).foundation({
 	});
 
 	Foundation.utils.S(document.body).on('click', '.selectedList', function(e){
+    list_ID = Foundation.utils.S(this).data('list-id');
+    // Trello.lists.get(list_ID, {cards: "open"}, function(list){
+    //   $.each(list.cards, function (i){
+    //     console.log(this.name);
+    //   });
+    // });
 		Foundation.utils.S('.off-canvas-wrap').foundation('offcanvas', 'hide', 'move-right');
 		list_ID = Foundation.utils.S(this).data('list-id');
 		list_NAME = Foundation.utils.S(this).data('list-name');
@@ -231,8 +240,8 @@ Foundation.utils.S(document.body).on('click', '.left-click', function(e){
 		}
 		if(nextNode == null){
 			arrayCards = tree.buildArray();
-			output = '<h6>Activity to priorize: Priorization Finished!</h6>';
-			Foundation.utils.S('#cardsView').html(output);
+			//output = '<h6>Activity to priorize: Priorization Finished!</h6>';
+			//Foundation.utils.S('#cardsView').html(output);
 			postCards();
 			var output = '<div data-alert class="alert-box success radius">Cards Prioritized.<a href="#" class="close">&times;</a></div>';
 			Foundation.utils.S('#alerts').html(output);
@@ -249,10 +258,19 @@ Foundation.utils.S(document.body).on('click', '.left-click', function(e){
 			(arrayCards[0])[0].pos = null;
 			Trello.post("cards/",(arrayCards[0])[0], function(){
 				arrayCards.shift();
+				if(arrayCards.length == 0){
+					Trello.lists.get(list_ID, {cards: "open"}, function(list){
+			      arrayCardsPrioritized = list.cards;
+						var output = '<div class="small-12 medium-12 large-12 columns"><h3>Cards Prioritized.</h3></div>';
+						output += '<h6>Priorization Finished!</h6></ br></ br>';
+				    $.each(arrayCardsPrioritized, function (){
+							output += '<p>'+ this.name + '</p>';
+			      });
+						Foundation.utils.S("#main-content").html(output);
+			    });
+				}
 				postCards();
 			});
-		}else{
-			displayBoards();
 		}
 	};
 
